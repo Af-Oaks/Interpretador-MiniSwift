@@ -13,7 +13,7 @@ public class ArrayExpr extends Expr {
     private ArrayType type;
     private List<Expr> itens;
 
-    protected ArrayExpr(int line, ArrayType type, List<Expr> itens) {
+    public ArrayExpr(int line, ArrayType type, List<Expr> itens) {
         super(line);
         this.type = type;
         this.itens = itens;

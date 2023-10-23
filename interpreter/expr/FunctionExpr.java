@@ -4,15 +4,54 @@ import interpreter.value.Value;
 
 public class FunctionExpr extends Expr {
 
-    protected FunctionExpr(int line) {
+    public static enum FunctionOp {
+        Count,
+        Empty,
+        Keys,
+        Values,
+        Append,
+        Contains
+    }
+
+    private FunctionOp op;
+    private Expr expr;
+    private Expr args;
+
+    public FunctionExpr(int line,FunctionOp op,Expr expr,Expr args){
         super(line);
-        //TODO Auto-generated constructor stub
+        this.op = op;
+        this.expr = expr;
+        this.args = args;
     }
 
     @Override
-    public Value expr() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'expr'");
+    public Value expr(){
+        Value values = null;
+        switch (op) {
+            case Count:
+                
+                break;
+            case Empty:
+                
+                break;
+            case Keys:
+                
+                break;
+            case Values:
+                
+                break;
+            case Append:
+                
+                break;
+            case Contains:
+                
+                break;
+            default:
+                System.out.println("ERRO FUNCTION.OP NAO EXISTENTE NO FUNCTIONEXPR.EXP()");
+                break;
+        }
+
+        return values;
     }
 
 

@@ -25,6 +25,7 @@ import interpreter.expr.ArrayExpr;
 import interpreter.expr.BinaryExpr;
 import interpreter.expr.CastExpr;
 import interpreter.expr.CastExpr.CastOp;
+import interpreter.expr.FunctionExpr.FunctionOp;
 import interpreter.expr.ConditionalExpr;
 import interpreter.expr.ConstExpr;
 import interpreter.expr.DictExpr;
@@ -502,18 +503,15 @@ public class SyntaticAnalysis {
         Expr left = procRel();
 
         while (match(Token.Type.AND, Token.Type.OR)) {
-           left = procRel();
            Expr right;
            BinaryExpr.Op op;
 
             switch (previous.type) {
                 case AND:
                     op = BinaryExpr.Op.And;
-                    right = procRel();
                     break;
                 case OR:
                     op = BinaryExpr.Op.Or;
-                    right = procRel();
                     break;
                 default:
                     right = null;
@@ -522,7 +520,7 @@ public class SyntaticAnalysis {
             }
 
             int line = previous.line;
-            
+            right = procRel();
             System.out.println("com condição if == null ----------");
             if(op != null)
                 left = new BinaryExpr(line,left,op,right);
@@ -591,9 +589,9 @@ public class SyntaticAnalysis {
     private Expr procTerm() {
         Expr expr = procPrefix();
         while(match(Token.Type.MUL, Token.Type.DIV)){
-        procPrefix();
+            procPrefix();
         }
-        //Acho que completei
+        //TODO: consertar isso
         
 
         return expr;
@@ -769,17 +767,18 @@ public class SyntaticAnalysis {
 
     // <array> ::= <arraytype> '(' [ <expr> { ',' <expr> } ] ')'
     private ArrayExpr procArray() {
-        procArrayType();
+        ArrayType tipoArray =procArrayType();
         eat(Token.Type.OPEN_PAR);
+        List<Expr> lista = new ArrayList<Expr>();
         if (!check(Token.Type.CLOSE_PAR)) {
-            procExpr();
+            lista.add(procExpr());
             while (match(Token.Type.COMMA)) {
-                procExpr();
+                lista.add(procExpr());
             }
         }
         eat(Token.Type.CLOSE_PAR);
-    //TODO: Construir a expressão a ser retornada
-        return null;
+        ArrayExpr expressao = new ArrayExpr(current.line,tipoArray,lista);
+        return expressao;
     }
 
     // <dict> ::= <dictype> '(' [ <expr> ':' <expr> { ',' <expr> ':' <expr> } ] ')'
@@ -808,12 +807,13 @@ public class SyntaticAnalysis {
         DictExpr dicionario = new DictExpr(current.line,comptype,items);
         return dicionario;
     }
-    //TODO: PROCLVALUE
+
     // <lvalue> ::= <name> { '[' <expr> ']' }
     private SetExpr procLValue() {
         Token name = procName();
         SetExpr sexpr = this.environment.get(name);
         while (match(Token.Type.OPEN_BRA)) {
+            //TODO: verifica,talvez tenhamos q pegar a expr retornada abaixo e fazer algo com ela
             procExpr();
             eat(Token.Type.CLOSE_BRA);
         }
@@ -822,68 +822,71 @@ public class SyntaticAnalysis {
 
     // <function> ::= { '.' ( <fnoargs> | <fonearg> ) }
     private FunctionExpr procFunction() {
-        //TODO: Verficar o que dever ser retornado.
+        FunctionExpr funcExp = new FunctionExpr(0, null, null, null);
+        //TODO: verificar se é possivel pegar os EXPR e os Func.op
         while(match(Token.Type.DOT)){
             if(check(Token.Type.APPEND, Token.Type.CONTAINS)){
-                procFOneArg();
+               funcExp = new FunctionExpr(current.line, null, funcExp, procFOneArg()); 
             } else {
                  if(check(Token.Type.COUNT, Token.Type.EMPTY, Token.Type.KEYS, Token.Type.VALUES)){
-                    procFNoArgs();
+                    funcExp = new FunctionExpr(current.line, null, funcExp, procFNoArgs());
                  }
             }
         }
 
-        //TODO: Construir a expressão a ser retornada
-        return null;
+        return funcExp;
     }
 
     // <fnoargs> ::= ( count | empty | keys | values ) '(' ')'
     private FunctionExpr procFNoArgs() {
         match(Token.Type.COUNT, Token.Type.EMPTY, Token.Type.KEYS, Token.Type.VALUES);
         Token tk = previous;
+        FunctionOp op =null;
         eat(Token.Type.OPEN_PAR);
         eat(Token.Type.CLOSE_PAR);
-        //TODO: Completar casos, analisar retorno possíveis
         switch(tk.type){
             case COUNT:
-
-            break;
-
+                op = FunctionOp.Count;
+                break;
             case EMPTY:
-
-            break;
-
+                op = FunctionOp.Empty;
+                break;
             case KEYS:
-
-            break;
-
+                op = FunctionOp.Keys;
+                break;
             case VALUES:
-
-            break;
-
+                op = FunctionOp.Values;
+                break;
             default:
-            
-            System.out.println("Alguma coisa deu muito errado no procFnoArgs");
-
-            break;
+                System.out.println("Alguma coisa deu muito errado no procFnoArgs");
+                break;
         }
-
-//TODO: Construir a expressão a ser retornada
-        return null;
+        FunctionExpr funcExpr = new FunctionExpr(current.line, op, null, null);
+        return funcExpr;
 
     }
 
     // <fonearg> ::= ( append | contains ) '(' <expr> ')'
     private FunctionExpr procFOneArg() {
-        match(Token.Type.APPEND, Token.Type.CONTAINS);
+        FunctionExpr funcExpr;
+        Expr expr;
+        FunctionOp op=null;
+        if(check(Token.Type.APPEND)){
+            op =FunctionOp.Append;
+        }
+        else if(check(Token.Type.CONTAINS)){
+            op =FunctionOp.Contains;
+        }
+        else{
+            reportError();
+        }
+        
         eat(Token.Type.OPEN_PAR);
-        procExpr();
+        expr = procExpr();
         eat(Token.Type.CLOSE_PAR);
+        funcExpr = new FunctionExpr(current.line,op,null,expr);
 
-        //TODO: Incluir chamada das funções, analisar retorno possíveis
-
-//TODO: Construir a expressão a ser retornada
-        return null;
+        return funcExpr;
     }
 
     private Token procName() {

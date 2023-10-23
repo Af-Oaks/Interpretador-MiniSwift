@@ -54,7 +54,8 @@ public class CastExpr extends Expr {
                             return new Value(BoolType.instance(), false);}
                         else{
                             return new Value(BoolType.instance(), true);}
-                    case Dict, Array:
+                    case Dict:
+                    case Array:
                         if(valor.data.equals(null)){
                             return new Value(BoolType.instance(), false);}
                         else{
