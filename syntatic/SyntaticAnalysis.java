@@ -465,7 +465,6 @@ public class SyntaticAnalysis {
     } 
 
     // <dicttype> ::= Dict '<' <type> ',' <type> '>'
-    
     private DictType procDictType() {
         eat(Token.Type.DICT);
         eat(Token.Type.LOWER_THAN);
