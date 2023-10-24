@@ -20,6 +20,7 @@ import interpreter.command.IfCommand;
 import interpreter.command.InitializeCommand;
 import interpreter.command.PrintCommand;
 import interpreter.command.WhileCommand;
+import interpreter.expr.AccessExpr;
 import interpreter.expr.ActionExpr;
 import interpreter.expr.ArrayExpr;
 import interpreter.expr.BinaryExpr;
@@ -385,6 +386,7 @@ public class SyntaticAnalysis {
             if (!(rhs instanceof SetExpr))
                 throw LanguageException.instance(previous.line, LanguageException.Error.InvalidOperation);
 
+            
             lhs = (SetExpr) rhs;
             rhs = procExpr();
         }
@@ -809,19 +811,27 @@ public class SyntaticAnalysis {
 
     // <lvalue> ::= <name> { '[' <expr> ']' }
     private SetExpr procLValue() {
+        
+        //TODO Se tiver os colchetes retornar uma accessExpr, se não, variavel
+System.out.println("---------------------------------VALUE MODIFICADO V2-----------------------------");
         Token name = procName();
         SetExpr sexpr = this.environment.get(name);
+        Expr index = null;
+        if(check(Token.Type.OPEN_BRA)){
         while (match(Token.Type.OPEN_BRA)) {
             //TODO: verifica,talvez tenhamos q pegar a expr retornada abaixo e fazer algo com ela
-            procExpr();
+            index = procExpr();
             eat(Token.Type.CLOSE_BRA);
         }
-        return sexpr;
+        return new AccessExpr(current.line, sexpr, index);
+    }
+    return sexpr;    
+        
     }
 
     // <function> ::= { '.' ( <fnoargs> | <fonearg> ) }
     private FunctionExpr procFunction() {
-        FunctionExpr funcExp = new FunctionExpr(0, null, null, null);
+        FunctionExpr funcExp = null;
         //TODO: verificar se é possivel pegar os EXPR e os Func.op
         while(match(Token.Type.DOT)){
             if(check(Token.Type.APPEND, Token.Type.CONTAINS)){
@@ -871,9 +881,11 @@ public class SyntaticAnalysis {
         Expr expr;
         FunctionOp op=null;
         if(check(Token.Type.APPEND)){
+            eat(Token.Type.APPEND);
             op =FunctionOp.Append;
         }
         else if(check(Token.Type.CONTAINS)){
+            eat(Token.Type.CONTAINS);
             op =FunctionOp.Contains;
         }
         else{

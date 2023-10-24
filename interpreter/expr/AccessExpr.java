@@ -13,7 +13,7 @@ public class AccessExpr extends SetExpr {
     private SetExpr base;
     private Expr index;
 
-    protected AccessExpr(int line, SetExpr base, Expr index) {
+    public AccessExpr(int line, SetExpr base, Expr index) {
         super(line);
         this.base = base;
         this.index = index;
@@ -27,6 +27,7 @@ public class AccessExpr extends SetExpr {
         if(Category.Array == a.type.getCategory() || Category.String == a.type.getCategory() ){
 
             List<Value> list_elements = (List<Value>)a.data;
+            
             int posicao = (int)index.expr().data;
             Value element = list_elements.get(posicao);
             return new Value(element.type ,element);
@@ -40,6 +41,7 @@ public class AccessExpr extends SetExpr {
             return new Value(type ,element);
         }
         else{
+            System.out.println("ERRO ACESS EXPR - EXPR()!!!!!!!!!!!");
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, a.type.toString());
         }
                                                        
@@ -56,20 +58,35 @@ public class AccessExpr extends SetExpr {
             
         }
         else if(Category.Dict == a.type.getCategory() ){
-
+            
             List<DictItem> list_elements = (List<DictItem>)a.data;
             DictType type = (DictType)a.type;
-            int posicao = (int)index.expr().data;
-
-            if(value.type.getCategory() == Category.Dict){
-                DictItem conteudo = (DictItem)value.data;
-                list_elements.set(posicao, conteudo);
+            int p =0;
+            Object posicao = index.expr().data;;
+            String classtype = posicao.getClass().toString();
+            if(classtype.equals("class java.lang.Character")){
+            p = Character.valueOf((Character)posicao);
+            }else{
+            p = (int)posicao;}
+            
+            //TODO verificar condicional do if
+            if(type.getCategory() == Category.Dict){
+                //TODO Condição abaixo não está sendo aceita
+                //DictItem conteudo = (DictItem)value.data;
+                DictItem conteudo = new DictItem();
+                //conteudo.value = value.data;
+                //conteudo.key = p;
+                //TODO O proprio DictItem já tem chave e conteúdo, pq passar novamente ambos para a lista?
+                //Onde que o valor da variavel original vai ser alterado?
+                list_elements.set(p, conteudo);
             }
             else{
-
+                System.out.println("ERRO ACESSEXPR SETVALUE()1111!!!!!!!!!!!");
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, a.type.toString());
             }
         }
         else{
+            System.out.println("ERRO ACESSEXPR SETVALUE()2222!!!!!!!!!!!");
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, a.type.toString());
         }
 

@@ -2,6 +2,7 @@ package interpreter.expr;
 
 import error.LanguageException;
 import interpreter.type.primitive.BoolType;
+import interpreter.type.primitive.CharType;
 import interpreter.type.primitive.FloatType;
 import interpreter.type.primitive.IntType;
 import interpreter.value.Value;
@@ -118,6 +119,8 @@ public class BinaryExpr extends Expr {
 
     private Value equalOp(Value lvalue, Value rvalue) {
                 IntType intType = IntType.instance();
+                FloatType floatType = FloatType.instance();
+                CharType charType = CharType.instance();
         if (intType.match(lvalue.type)) {
             if (intType.match(rvalue.type)) {
                 int m = (Integer) lvalue.data;
@@ -127,13 +130,33 @@ public class BinaryExpr extends Expr {
             } else {
                 throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
             }
-        } else {
+        } else if (floatType.match(lvalue.type)) {
+            if (floatType.match(rvalue.type)) {
+                float m = (Float) lvalue.data;
+                float n = (Float) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m == n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else if (charType.match(lvalue.type)) {
+            if (charType.match(rvalue.type)) {
+                char m = (Character) lvalue.data;
+                char n = (Character) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m == n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else{
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, lvalue.type.toString());
         }
     }
 
     private Value notEqualOp(Value lvalue, Value rvalue) {
                 IntType intType = IntType.instance();
+                FloatType floatType = FloatType.instance();
+                CharType charType = CharType.instance();
         if (intType.match(lvalue.type)) {
             if (intType.match(rvalue.type)) {
                 int m = (Integer) lvalue.data;
@@ -143,13 +166,33 @@ public class BinaryExpr extends Expr {
             } else {
                 throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
             }
-        } else {
+        } else if (floatType.match(lvalue.type)) {
+            if (floatType.match(rvalue.type)) {
+                float m = (Float) lvalue.data;
+                float n = (Float) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m != n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else if (charType.match(lvalue.type)) {
+            if (charType.match(rvalue.type)) {
+                char m = (Character) lvalue.data;
+                char n = (Character) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m != n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else{
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, lvalue.type.toString());
         }
     }
 
     private Value lowerThanOp(Value lvalue, Value rvalue) {
-        IntType intType = IntType.instance();
+                IntType intType = IntType.instance();
+                FloatType floatType = FloatType.instance();
+                CharType charType = CharType.instance();
         if (intType.match(lvalue.type)) {
             if (intType.match(rvalue.type)) {
                 int m = (Integer) lvalue.data;
@@ -159,13 +202,33 @@ public class BinaryExpr extends Expr {
             } else {
                 throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
             }
-        } else {
+        } else if (floatType.match(lvalue.type)) {
+            if (floatType.match(rvalue.type)) {
+                float m = (Float) lvalue.data;
+                float n = (Float) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m < n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else if (charType.match(lvalue.type)) {
+            if (charType.match(rvalue.type)) {
+                char m = (Character) lvalue.data;
+                char n = (Character) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m < n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else{
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, lvalue.type.toString());
         }
     }
 
     private Value lowerEqualOp(Value lvalue, Value rvalue) {
                 IntType intType = IntType.instance();
+                FloatType floatType = FloatType.instance();
+                CharType charType = CharType.instance();
         if (intType.match(lvalue.type)) {
             if (intType.match(rvalue.type)) {
                 int m = (Integer) lvalue.data;
@@ -175,13 +238,33 @@ public class BinaryExpr extends Expr {
             } else {
                 throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
             }
-        } else {
+        } else if (floatType.match(lvalue.type)) {
+            if (floatType.match(rvalue.type)) {
+                float m = (Float) lvalue.data;
+                float n = (Float) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m <= n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else if (charType.match(lvalue.type)) {
+            if (charType.match(rvalue.type)) {
+                char m = (Character) lvalue.data;
+                char n = (Character) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m <= n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else{
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, lvalue.type.toString());
         }
     }
 
     private Value greaterThanOp(Value lvalue, Value rvalue) {
-        IntType intType = IntType.instance();
+                IntType intType = IntType.instance();
+                FloatType floatType = FloatType.instance();
+                CharType charType = CharType.instance();
         if (intType.match(lvalue.type)) {
             if (intType.match(rvalue.type)) {
                 int m = (Integer) lvalue.data;
@@ -191,13 +274,33 @@ public class BinaryExpr extends Expr {
             } else {
                 throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
             }
-        } else {
+        } else if (floatType.match(lvalue.type)) {
+            if (floatType.match(rvalue.type)) {
+                float m = (Float) lvalue.data;
+                float n = (Float) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m > n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else if (charType.match(lvalue.type)) {
+            if (charType.match(rvalue.type)) {
+                char m = (Character) lvalue.data;
+                char n = (Character) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m > n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else{
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, lvalue.type.toString());
         }
     }
 
     private Value greaterEqualOp(Value lvalue, Value rvalue) {
                 IntType intType = IntType.instance();
+                FloatType floatType = FloatType.instance();
+                CharType charType = CharType.instance();
         if (intType.match(lvalue.type)) {
             if (intType.match(rvalue.type)) {
                 int m = (Integer) lvalue.data;
@@ -207,7 +310,25 @@ public class BinaryExpr extends Expr {
             } else {
                 throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
             }
-        } else {
+        } else if (floatType.match(lvalue.type)) {
+            if (floatType.match(rvalue.type)) {
+                float m = (Float) lvalue.data;
+                float n = (Float) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m >= n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else if (charType.match(lvalue.type)) {
+            if (charType.match(rvalue.type)) {
+                char m = (Character) lvalue.data;
+                char n = (Character) rvalue.data;
+                Value v = new Value(BoolType.instance(), (m >= n));
+                return v;
+            } else {
+                throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, rvalue.type.toString());
+            }
+        } else{
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, lvalue.type.toString());
         }
     }

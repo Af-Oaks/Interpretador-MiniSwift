@@ -34,6 +34,7 @@ public class LanguageException extends RuntimeException {
     }
 
     public static LanguageException instance(int line, Error error, String ... args) {
+
         assert error.args == args.length;
         String msg = error.args == 0 ? error.msg : String.format(error.msg, (Object[]) args);
         return new LanguageException(line, msg);
