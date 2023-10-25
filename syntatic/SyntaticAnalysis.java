@@ -813,7 +813,7 @@ public class SyntaticAnalysis {
     private SetExpr procLValue() {
         
         //TODO Se tiver os colchetes retornar uma accessExpr, se não, variavel
-System.out.println("---------------------------------VALUE MODIFICADO V2-----------------------------");
+        System.out.println("---------------------------------VALUE MODIFICADO V2-----------------------------");
         Token name = procName();
         SetExpr sexpr = this.environment.get(name);
         Expr index = null;

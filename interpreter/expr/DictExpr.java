@@ -1,13 +1,13 @@
 package interpreter.expr;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import interpreter.type.composed.DictType;
 
 import interpreter.value.Value;
-
-
 
 public class DictExpr extends Expr {
 
@@ -23,8 +23,17 @@ public class DictExpr extends Expr {
     @Override
     public Value expr() {
         System.out.println("Tá chegando no dict type");
-        Value v = new Value(DictType.instance(type.getKeyType(), type.getValueType()), items);
-        return v;
+
+        //criar map para retornar o value
+        Map<Expr,Expr> realMap = new HashMap<Expr,Expr>();
+
+        for (DictItem dictItem : items) {
+            realMap.put(dictItem.key, dictItem.value);
+        }
+        Value map = new Value(type,realMap);
+
+
+        return map;
         
     }
     

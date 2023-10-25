@@ -21,7 +21,7 @@ public class AccessExpr extends SetExpr {
 
     @Override
     public Value expr() {
-        // TODO: verificar funcionamento
+        // TODO: verificar funcionamento e adicionar lançamento de exceções
         Value a = base.expr();
 
         if(Category.Array == a.type.getCategory() || Category.String == a.type.getCategory() ){
@@ -34,11 +34,10 @@ public class AccessExpr extends SetExpr {
         }
         else if(Category.Dict == a.type.getCategory() ){
 
-            List<DictItem> list_elements = (List<DictItem>)a.data;
+            Map<Expr,Expr> map = (Map<Expr,Expr>)a.data;
             DictType type = (DictType)a.type;
-            int posicao = (int)index.expr().data;
-            DictItem element = list_elements.get(posicao);
-            return new Value(type ,element);
+            Expr element = map.get(index);
+            return new Value(type.getValueType() ,element);
         }
         else{
             System.out.println("ERRO ACESS EXPR - EXPR()!!!!!!!!!!!");
