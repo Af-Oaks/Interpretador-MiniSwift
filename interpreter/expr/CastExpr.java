@@ -33,7 +33,6 @@ public class CastExpr extends Expr {
 
     @Override
     public Value expr() {
-        //TODO: Pronto/Verificar 
 
         Value valor = expr.expr();
         

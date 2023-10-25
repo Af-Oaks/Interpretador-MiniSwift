@@ -594,7 +594,6 @@ public class SyntaticAnalysis {
         }
         //TODO: consertar isso
         
-
         return expr;
     }
 
@@ -819,7 +818,6 @@ public class SyntaticAnalysis {
         Expr index = null;
         if(check(Token.Type.OPEN_BRA)){
         while (match(Token.Type.OPEN_BRA)) {
-            //TODO: verifica,talvez tenhamos q pegar a expr retornada abaixo e fazer algo com ela
             index = procExpr();
             eat(Token.Type.CLOSE_BRA);
         }
@@ -835,10 +833,10 @@ public class SyntaticAnalysis {
         //TODO: verificar se é possivel pegar os EXPR e os Func.op
         while(match(Token.Type.DOT)){
             if(check(Token.Type.APPEND, Token.Type.CONTAINS)){
-               funcExp = new FunctionExpr(current.line, null, funcExp, procFOneArg()); 
+               funcExp = new FunctionExpr(current.line, null, funcExp, procFOneArg(funcExp)); 
             } else {
                  if(check(Token.Type.COUNT, Token.Type.EMPTY, Token.Type.KEYS, Token.Type.VALUES)){
-                    funcExp = new FunctionExpr(current.line, null, funcExp, procFNoArgs());
+                    funcExp = new FunctionExpr(current.line, null, funcExp, procFNoArgs(funcExp));
                  }
             }
         }
@@ -847,7 +845,7 @@ public class SyntaticAnalysis {
     }
 
     // <fnoargs> ::= ( count | empty | keys | values ) '(' ')'
-    private FunctionExpr procFNoArgs() {
+    private FunctionExpr procFNoArgs(Expr exp) {
         match(Token.Type.COUNT, Token.Type.EMPTY, Token.Type.KEYS, Token.Type.VALUES);
         Token tk = previous;
         FunctionOp op =null;
@@ -870,13 +868,13 @@ public class SyntaticAnalysis {
                 System.out.println("Alguma coisa deu muito errado no procFnoArgs");
                 break;
         }
-        FunctionExpr funcExpr = new FunctionExpr(current.line, op, null, null);
+        FunctionExpr funcExpr = new FunctionExpr(current.line, op, exp, null);
         return funcExpr;
 
     }
 
     // <fonearg> ::= ( append | contains ) '(' <expr> ')'
-    private FunctionExpr procFOneArg() {
+    private FunctionExpr procFOneArg(Expr exp) {
         FunctionExpr funcExpr;
         Expr expr;
         FunctionOp op=null;
@@ -895,7 +893,7 @@ public class SyntaticAnalysis {
         eat(Token.Type.OPEN_PAR);
         expr = procExpr();
         eat(Token.Type.CLOSE_PAR);
-        funcExpr = new FunctionExpr(current.line,op,null,expr);
+        funcExpr = new FunctionExpr(current.line,op,exp,expr);
 
         return funcExpr;
     }

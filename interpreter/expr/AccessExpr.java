@@ -58,34 +58,21 @@ public class AccessExpr extends SetExpr {
         }
         else if(Category.Dict == a.type.getCategory() ){
             
-            List<DictItem> list_elements = (List<DictItem>)a.data;
-            DictType type = (DictType)a.type;
-            int p =0;
-            Object posicao = index.expr().data;;
-            String classtype = posicao.getClass().toString();
-            if(classtype.equals("class java.lang.Character")){
-            p = Character.valueOf((Character)posicao);
-            }else{
-            p = (int)posicao;}
-            
-            //TODO verificar condicional do if
-            if(type.getCategory() == Category.Dict){
-                //TODO Condição abaixo não está sendo aceita
-                //DictItem conteudo = (DictItem)value.data;
-                DictItem conteudo = new DictItem();
-                //conteudo.value = value.data;
-                //conteudo.key = p;
-                //TODO O proprio DictItem já tem chave e conteúdo, pq passar novamente ambos para a lista?
-                //Onde que o valor da variavel original vai ser alterado?
-                list_elements.set(p, conteudo);
-            }
+            Map<Expr,Expr> map = (Map<Expr,Expr>)a.data;
+            DictType tipo = (DictType)a.type;
+            DictItem item = (DictItem)value.data;
+        
+           if(tipo.getCategory() == value.type.getCategory()){
+                map.replace(item.key, item.value);
+                base = (SetExpr)map;
+           }
             else{
-                System.out.println("ERRO ACESSEXPR SETVALUE()1111!!!!!!!!!!!");
+                System.out.println("ERRO SETVALUE!!!! VALUE.TYPE != DICT.TYPE");
                 throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, a.type.toString());
             }
         }
         else{
-            System.out.println("ERRO ACESSEXPR SETVALUE()2222!!!!!!!!!!!");
+            System.out.println("ERRO ACESSEXPR SETVALUE()NENHUM TIPO POSSIVEL ENCONTRADO!!!!!!!!!!!");
             throw LanguageException.instance(super.getLine(), LanguageException.Error.InvalidType, a.type.toString());
         }
 
